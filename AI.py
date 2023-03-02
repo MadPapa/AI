@@ -23,12 +23,25 @@ class AI:
             for i in range(len(vector_1)):
                 answer += vector_1[i] * vector_2[i]
         return answer
+    
+    # mnożenie wektorów przez skalar
+    @staticmethod
+    def multiply_matrix_by_skalar(matrix, scalar):
+        return [AI.multiply_vectors_by_scalar(scalar, x) for x in matrix]
 
 
 def main():
     print(AI.multiply_vectors_by_scalar(2, [3, 0, 5]))
     print(AI.add_vectors([3, 0, 5], [6, 4, -2]))
     print(AI.dot_product([3, 0, 5], [6, 4, -2]))
+    print(AI.multiply_matrix_by_skalar(
+        matrix=[
+            [1, 2, 3],
+            [4, 5, 6],
+            [7, 8, 9],
+        ], 
+        scalar=2
+    ))
 
 if __name__ == '__main__':
     main()
