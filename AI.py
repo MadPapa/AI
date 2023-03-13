@@ -1,5 +1,4 @@
 class AI:
-
     # mnożenie skalara przez wektor
     @staticmethod
     def multiply_vectors_by_scalar(scalar, vector):
@@ -48,6 +47,29 @@ class AI:
         else:
             print('The number of columns of the first matrix is not equal to the number of rows of the second matrix.')
 
+    # wyznacznik macierzy
+    @staticmethod
+    def matrix_determinant(matrix):
+        if len(matrix) == 1:
+            return matrix[0][0]
+        if len(matrix) == 2:
+            return matrix[0][0] * matrix[1][1] - matrix[0][1] * matrix[1][0]
+
+        det = 0
+
+        for i in range(len(matrix)):
+            sign = (-1) ** i
+            sub_matrix = []
+            for j in range(1, len(matrix)):
+                row = []
+                for k in range(len(matrix)):
+                    if k != i:
+                        row.append(matrix[j][k])
+                sub_matrix.append(row)
+            sub_det = AI.matrix_determinant(sub_matrix)
+            det += sign * matrix[0][i] * sub_det
+        return det
+
 
 def main():
     # print(AI.multiply_vectors_by_scalar(2, [3, 0, 5]))
@@ -62,17 +84,18 @@ def main():
     #     scalar=2
     # ))
 
-    matrix_1 = [
-        [-1, -2, 3],
-        [0, 2, -1],
-        [-1, 3, 0]
-    ]
+    # matrix_1 = [
+    #     [-1, -2, 3],
+    #     [0, 2, -1],
+    #     [-1, 3, 0]
+    # ]
     matrix_2 = [
         [1, 5, 1],
         [2, 1, 2],
         [3, 2, 3]
     ]
-    print(AI.matrix_multiplication(matrix_1, matrix_2))
+    # print(AI.matrix_multiplication(matrix_1, matrix_2))
+    print(AI.matrix_determinant(matrix_2))
 
 
 if __name__ == '__main__':
