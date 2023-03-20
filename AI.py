@@ -80,23 +80,23 @@ class AI:
         else:
             inverted_matrix = [[0 for j in range(3)] for i in range(3)]
             inverted_matrix[0][0] = (
-                matrix[1][1] * matrix[2][2] - matrix[2][1] * matrix[1][2]) / det
+                matrix[1][1] * matrix[2][2] - matrix[2][1] * matrix[1][2]) // det
             inverted_matrix[0][1] = (
-                matrix[0][2] * matrix[2][1] - matrix[0][1] * matrix[2][2]) / det
+                matrix[0][2] * matrix[2][1] - matrix[0][1] * matrix[2][2]) // det
             inverted_matrix[0][2] = (
-                matrix[0][1] * matrix[1][2] - matrix[0][2] * matrix[1][1]) / det
+                matrix[0][1] * matrix[1][2] - matrix[0][2] * matrix[1][1]) // det
             inverted_matrix[1][0] = (
-                matrix[1][2] * matrix[2][0] - matrix[1][0] * matrix[2][2]) / det
+                matrix[1][2] * matrix[2][0] - matrix[1][0] * matrix[2][2]) // det
             inverted_matrix[1][1] = (
-                matrix[0][0] * matrix[2][2] - matrix[0][2] * matrix[2][0]) / det
+                matrix[0][0] * matrix[2][2] - matrix[0][2] * matrix[2][0]) // det
             inverted_matrix[1][2] = (
-                matrix[1][0] * matrix[0][2] - matrix[0][0] * matrix[1][2]) / det
+                matrix[1][0] * matrix[0][2] - matrix[0][0] * matrix[1][2]) // det
             inverted_matrix[2][0] = (
-                matrix[1][0] * matrix[2][1] - matrix[2][0] * matrix[1][1]) / det
+                matrix[1][0] * matrix[2][1] - matrix[2][0] * matrix[1][1]) // det
             inverted_matrix[2][1] = (
-                matrix[2][0] * matrix[0][1] - matrix[0][0] * matrix[2][1]) / det
+                matrix[2][0] * matrix[0][1] - matrix[0][0] * matrix[2][1]) // det
             inverted_matrix[2][2] = (
-                matrix[0][0] * matrix[1][1] - matrix[1][0] * matrix[0][1]) / det
+                matrix[0][0] * matrix[1][1] - matrix[1][0] * matrix[0][1]) // det
 
             return inverted_matrix
 
