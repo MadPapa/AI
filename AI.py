@@ -70,6 +70,36 @@ class AI:
             det += sign * matrix[0][i] * sub_det
         return det
 
+    # odwrotność macierzy 3x3 - macierz dopelnien
+    @staticmethod
+    def invert_matrix_3x3(matrix):
+        det = AI.matrix_determinant(matrix)
+
+        if det == 0:
+            print('Matrix can not be invert')
+        else:
+            inverted_matrix = [[0 for j in range(3)] for i in range(3)]
+            inverted_matrix[0][0] = (
+                matrix[1][1] * matrix[2][2] - matrix[2][1] * matrix[1][2]) / det
+            inverted_matrix[0][1] = (
+                matrix[0][2] * matrix[2][1] - matrix[0][1] * matrix[2][2]) / det
+            inverted_matrix[0][2] = (
+                matrix[0][1] * matrix[1][2] - matrix[0][2] * matrix[1][1]) / det
+            inverted_matrix[1][0] = (
+                matrix[1][2] * matrix[2][0] - matrix[1][0] * matrix[2][2]) / det
+            inverted_matrix[1][1] = (
+                matrix[0][0] * matrix[2][2] - matrix[0][2] * matrix[2][0]) / det
+            inverted_matrix[1][2] = (
+                matrix[1][0] * matrix[0][2] - matrix[0][0] * matrix[1][2]) / det
+            inverted_matrix[2][0] = (
+                matrix[1][0] * matrix[2][1] - matrix[2][0] * matrix[1][1]) / det
+            inverted_matrix[2][1] = (
+                matrix[2][0] * matrix[0][1] - matrix[0][0] * matrix[2][1]) / det
+            inverted_matrix[2][2] = (
+                matrix[0][0] * matrix[1][1] - matrix[1][0] * matrix[0][1]) / det
+
+            return inverted_matrix
+
 
 def main():
     # print(AI.multiply_vectors_by_scalar(2, [3, 0, 5]))
@@ -84,19 +114,19 @@ def main():
     #     scalar=2
     # ))
 
-    # matrix_1 = [
-    #     [-1, -2, 3],
-    #     [0, 2, -1],
-    #     [-1, 3, 0]
-    # ]
-    matrix_2 = [
-        [1, 5, 1],
-        [2, 1, 2],
-        [3, 2, 3]
+    matrix_1 = [
+        [-1, -2, 3],
+        [0, 2, -1],
+        [-1, 3, 0]
     ]
+    # matrix_2 = [
+    #     [1, 5, 1],
+    #     [2, 1, 2],
+    #     [3, 2, 3]
+    # ]
     # print(AI.matrix_multiplication(matrix_1, matrix_2))
-    print(AI.matrix_determinant(matrix_2))
-
+    # print(AI.matrix_determinant(matrix_2))
+    print(AI.invert_matrix_3x3(matrix_1))
 
 if __name__ == '__main__':
     main()
