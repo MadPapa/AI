@@ -130,6 +130,23 @@ class AI:
 
         return identity
 
+    # układ 2 równań z 2 niewiadomymi Cramer
+    @staticmethod
+    def system_of_equations_cramer(matrix):
+        det = (matrix[0][0] * matrix[1][1]) - (matrix[1][0] * matrix[0][1]) # (a1 * b2) - (a2 * b1)
+        det_x = (matrix[0][2] * matrix[1][1]) - (matrix[1][2] * matrix[0][1])# (c1 * b2) - (c2 * b1)
+        det_y = (matrix[0][0] * matrix[1][2]) - (matrix[1][0] * matrix[0][2]) # (a1 * c2) - (a2 * c1)
+
+        if det == 0 and (det_x or det_y) != 0:
+            raise ValueError('Brak rozwiazan')
+        elif det == 0 and det_x == 0 and det_y == 0:
+            raise ValueError('nieskonczenie wiele rozwiazan')
+        else:
+            x = det_x / det
+            y = det_y / det
+
+            return 'x = {}\ny = {}'.format(x, y)
+
 
 def main():
     # print(AI.multiply_vectors_by_scalar(2, [3, 0, 5]))
@@ -144,20 +161,27 @@ def main():
     #     scalar=2
     # ))
 
-    matrix_1 = [
-        [-1, -2, 3],
-        [0, 2, -1],
-        [-1, 3, 0]
-    ]
+    # matrix_1 = [
+    #     [-1, -2, 3],
+    #     [0, 2, -1],
+    #     [-1, 3, 0]
+    # ]
     # matrix_2 = [
     #     [1, 5, 1],
     #     [2, 1, 2],
     #     [3, 2, 3]
     # ]
+
+    matrix_3 = [
+            [1, 2, 8],
+            [2, -1, 1]
+        ]
+
     # print(AI.matrix_multiplication(matrix_1, matrix_2))
     # print(AI.matrix_determinant(matrix_2))
     # print(AI.invert_matrix_3x3(matrix_1))
-    print(AI.invert_matrix_3x3_gauss(matrix_1))
+    # print(AI.invert_matrix_3x3_gauss(matrix_1))
+    print(AI.system_of_equations_cramer(matrix_3))
 
 
 if __name__ == '__main__':
