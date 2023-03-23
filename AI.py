@@ -100,6 +100,36 @@ class AI:
 
             return inverted_matrix
 
+    # odwrotność macierzy 3x3 - metoda Gaussa
+    @staticmethod
+    def invert_matrix_3x3_gauss(matrix):
+        if len(matrix) != 3 or len(matrix[0]) != 3:
+            raise ValueError("The matrix must be 3x3.")
+
+        identity = [
+            [1, 0, 0],
+            [0, 1, 0],
+            [0, 0, 1]
+        ]
+        matrix_len = len(matrix)
+        for col in range(matrix_len):
+            if matrix[col][col] == 0:
+                raise ValueError("The matrix has no inverse.")
+
+            scalar = 1 / matrix[col][col]
+            for row in range(matrix_len):
+                matrix[row][col] *= scalar
+                identity[row][col] *= scalar
+
+            for row in range(matrix_len):
+                if row != col:
+                    scalar = matrix[col][row]
+                    for i in range(matrix_len):
+                        matrix[i][row] -= scalar * matrix[i][col]
+                        identity[i][row] -= scalar * identity[i][col]
+
+        return identity
+
 
 def main():
     # print(AI.multiply_vectors_by_scalar(2, [3, 0, 5]))
@@ -126,7 +156,9 @@ def main():
     # ]
     # print(AI.matrix_multiplication(matrix_1, matrix_2))
     # print(AI.matrix_determinant(matrix_2))
-    print(AI.invert_matrix_3x3(matrix_1))
+    # print(AI.invert_matrix_3x3(matrix_1))
+    print(AI.invert_matrix_3x3_gauss(matrix_1))
+
 
 if __name__ == '__main__':
     main()
