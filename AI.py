@@ -138,9 +138,9 @@ class AI:
         det_y = (matrix[0][0] * matrix[1][2]) - (matrix[1][0] * matrix[0][2]) # (a1 * c2) - (a2 * c1)
 
         if det == 0 and (det_x or det_y) != 0:
-            raise ValueError('Brak rozwiazan')
+            raise ValueError('no solutions')
         elif det == 0 and det_x == 0 and det_y == 0:
-            raise ValueError('nieskonczenie wiele rozwiazan')
+            raise ValueError('infinitely many solutions')
         else:
             x = det_x / det
             y = det_y / det
