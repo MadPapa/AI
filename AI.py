@@ -129,6 +129,31 @@ class AI:
                         identity[i][row] -= scalar * identity[i][col]
 
         return identity
+    
+    # odwrotność macierzy 5x5 i innych - metoda Gaussa
+    @staticmethod
+    def invert_matrix_5x5_gauss(matrix):
+
+        identity = [[0 if j != i else 1 for j in range(len(matrix[0]))] for i in range(len(matrix))]
+
+        matrix_len = len(matrix)
+        for col in range(matrix_len):
+            if matrix[col][col] == 0:
+                raise ValueError("The matrix has no inverse.")
+
+            scalar = 1 / matrix[col][col]
+            for row in range(matrix_len):
+                matrix[row][col] *= scalar
+                identity[row][col] *= scalar
+
+            for row in range(matrix_len):
+                if row != col:
+                    scalar = matrix[col][row]
+                    for i in range(matrix_len):
+                        matrix[i][row] -= scalar * matrix[i][col]
+                        identity[i][row] -= scalar * identity[i][col]
+
+        return identity
 
     # układ 2 równań z 2 niewiadomymi Cramer
     @staticmethod
@@ -172,16 +197,26 @@ def main():
     #     [3, 2, 3]
     # ]
 
-    matrix_3 = [
-            [1, 2, 8],
-            [2, -1, 1]
-        ]
+    # matrix_3 = [
+    #         [1, 2, 8],
+    #         [2, -1, 1]
+    #     ]
+
+    matrix = [
+        [1, 0, 0, 0, 2],
+        [2, 1, 0, 0, 0],
+        [0, 1, 1, 0, 0],
+        [0, 0, 1, 1, 0],
+        [0, 0, 0, 1, 1]
+    ]
 
     # print(AI.matrix_multiplication(matrix_1, matrix_2))
     # print(AI.matrix_determinant(matrix_2))
     # print(AI.invert_matrix_3x3(matrix_1))
     # print(AI.invert_matrix_3x3_gauss(matrix_1))
-    print(AI.system_of_equations_cramer(matrix_3))
+    # print(AI.system_of_equations_cramer(matrix_3))
+
+    print([[round(el, 2) for el in row] for row in AI.invert_matrix_5x5_gauss(matrix)])
 
 
 if __name__ == '__main__':
