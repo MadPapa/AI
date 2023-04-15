@@ -171,6 +171,18 @@ class AI:
             y = det_y / det
 
             return 'x = {}\ny = {}'.format(x, y)
+        
+    # rząd macierzy
+    @staticmethod
+    def matrix_rank(matrix):
+        inverted_matrix = AI.invert_matrix_5x5_gauss(matrix)
+        rank = len(matrix)
+
+        for row in inverted_matrix:
+            if all(elem == 0 for elem in row):
+                rank -= 1
+        
+        return rank
 
 
 def main():
@@ -210,14 +222,21 @@ def main():
         [0, 0, 0, 1, 1]
     ]
 
+    matrix2 = [
+        [1, 2, 0],
+        [0, -1, 3],
+        [2, 0, -2],
+    ]
+
     # print(AI.matrix_multiplication(matrix_1, matrix_2))
     # print(AI.matrix_determinant(matrix_2))
     # print(AI.invert_matrix_3x3(matrix_1))
     # print(AI.invert_matrix_3x3_gauss(matrix_1))
     # print(AI.system_of_equations_cramer(matrix_3))
 
-    print([[round(el, 2) for el in row] for row in AI.invert_matrix_5x5_gauss(matrix)])
-
+    # print([[round(el, 2) for el in row] for row in AI.invert_matrix_5x5_gauss(matrix)])
+    print(AI.matrix_rank(matrix2))
+    
 
 if __name__ == '__main__':
     main()
