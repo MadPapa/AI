@@ -1,80 +1,123 @@
-from typing import List
+import csv
 import math
-import numpy as np
-
-class Car:
-    model: str
-    speed: int
-    prod_year: int
-    category: str
-
-    def __init__(self, model: str, speed: int, prod_year: int, category: str = None) -> None:
-        self.model = model
-        self.speed = speed
-        self.prod_year = prod_year
-        self.category = category
-
-    def __str__(self) -> str:
-        return f"{self.model}\n{self.prod_year}\n{self.speed}\n{self.category}\n"
+import random
+from operator import itemgetter
+from typing import List, TextIO
 
 
-def euklides(array: List, car: Car) -> List:
-    return [
-        [obj.category, math.sqrt(((obj.speed - car.speed) ** 2) + ((obj.prod_year - car.prod_year) ** 2))] for obj in array
-    ]
+def read_data(path: TextIO) -> List:
+    array: List = []
+    with open(path, "r", encoding="utf-8") as file:
+        reader = csv.reader(file, delimiter=",")
 
-def knn(values: List, k: int) -> List:
-    new_list: List = []
+        next(reader)  # skiped first line (data header)
 
-    while len(new_list) < k:
-        smaller: List = values[0]
-        values.remove(values[0])
-        for item in values:
-            if item[1] < smaller[1]:
-                smaller = item
-        
-        if smaller not in new_list:
-            new_list.append(smaller)
+        for row in reader:
+            values: List = [int(value) for value in row]
+            array.append(values)
 
-    return new_list
-
-def make_decision(values: List) -> str:
-    fast: int = 0
-    slow: int = 0
-
-    for item in values:
-        if item[0] == "fast":
-            fast += 1
-        if item[0] == "slow":
-            slow += 1
-        else:
-            continue
-
-    return "fast" if fast > slow else "slow"
+    return array
 
 
-cars: List = [
-    Car("BMW", 100, 2018, "fast"),
-    Car("Audi", 60, 2015, "slow"),
-    Car("Fiat", 120, 2019, "fast"),
-    Car("Mercedes", 220, 2012, "fast"),
-    Car("Opel", 80, 1980, "slow"),
-    Car("Mitsubishi", 200, 2019, "fast"),
-]
+def prepare_set(data_length: int, percent: float) -> int:
+    return int(data_length * percent)
 
-new_car: Car = Car("Volkswagen", 90, 2017)
 
-print("Distances:\n")
-distances: List = euklides(cars, new_car)
-print(np.asarray(distances))
+def add_data_to_the_train_set(data_set: List, how_many: int) -> List:
+    train_set: List = []
 
-print()
+    while len(train_set) < how_many:
+        rand_id: int = random.randint(0, len(data_set) - 1)
+        train_set.append(data_set.pop(rand_id))
 
-k: int = 3
+    return train_set
 
-print(f"Neighbors (k = {k}):\n")
-answers: List = knn(distances, k)
-print(np.asarray(answers))
 
-print()
-print("Decision:", make_decision(answers))
+def add_data_to_the_test_set(data_set: List, how_many: int) -> List:
+    test_set: List = []
+
+    while len(test_set) < how_many:
+        rand_id: int = random.randint(0, len(data_set) - 1)
+        test_set.append(data_set.pop(rand_id)[:4])
+
+    return test_set
+
+
+def euklides(array_1: List, array_2: List) -> float:
+    dimension: int = len(array_1) - 1  # remove one dimension (price)
+    return math.sqrt(sum((array_1[i] - array_2[i]) ** 2 for i in range(dimension)))
+
+
+def manhattan(array_1: List, array_2: List) -> float:
+    dimension: int = len(array_1) - 1
+    return sum(abs(array_1[i] - array_2[i]) for i in range(dimension))
+
+
+def cosine_similarity(array_1: List, array_2: List) -> float:
+    dimension: int = len(array_1) - 1
+
+    dot_product: float = sum(array_1[i] * array_2[i] for i in range(dimension))
+    magnitude_1: float = math.sqrt(sum(array_1[i] ** 2 for i in range(dimension)))
+    magnitude_2: float = math.sqrt(sum(array_2[i] ** 2 for i in range(dimension)))
+
+    similarity: float = dot_product / (magnitude_1 * magnitude_2)
+
+    return 1 - similarity
+
+
+def k_nearest_neighbors(train_set: List, test_sample: List, k: int, metric: int):
+    distances: List = []
+
+    for train_sample in train_set:
+        if metric == 1:
+            dist: float = euklides(test_sample, train_sample)
+        if metric == 2:
+            dist: float = manhattan(test_sample, train_sample)
+        if metric == 3:
+            dist: float = cosine_similarity(test_sample, train_sample)
+
+        distances.append((train_sample, dist))
+
+    distances.sort(key=itemgetter(1))
+    neighbours: List = [(dist[0]) for dist in distances[:k]]
+
+    return neighbours
+
+
+def predicted_price(neighbors: List, k: int):
+    return sum(neighbor[-1] for neighbor in neighbors) / k
+
+
+if __name__ == "__main__":
+    array: List = read_data("data.csv")
+
+    train_count: int = prepare_set(len(array), 0.7)
+    test_count: int = prepare_set(len(array), 0.3)
+
+    # print(train_count, test_count)
+
+    train_set: List = add_data_to_the_train_set(array, train_count)
+    test_set: List = add_data_to_the_test_set(array, test_count)
+
+    # print("length: ", len(train_set))
+    # print("length: ", len(test_set))
+
+    print("Available metrics:")
+    print("1 - Euklides")
+    print("2 - Manhattan")
+    print("3 - Cosine similarity")
+
+    metric: int = int(input("Input a number: "))
+
+    k: int = int(input("Input k-neighbors: "))
+
+    for test_sample in test_set:
+        neighbors: List = k_nearest_neighbors(train_set, test_sample, k, metric)
+
+        print(f"\nPróbka testowa: {test_sample}")
+        print(f"Najbliżsi sąsiedzi:")
+        for neigbor in neighbors:
+            print(neigbor)
+        print("Przewidywana cena (tys PLN): ", predicted_price(neighbors, k))
+        for i in range(len(neighbors) * 15):
+            print("-", end="")
