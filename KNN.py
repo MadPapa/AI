@@ -10,7 +10,7 @@ def read_data(path: TextIO) -> List:
     with open(path, "r", encoding="utf-8") as file:
         reader = csv.reader(file, delimiter=",")
 
-        next(reader)  # skiped first line (data header)
+        next(reader)  # skip the first line (data header)
 
         for row in reader:
             values: List = [int(value) for value in row]
@@ -44,21 +44,22 @@ def add_data_to_the_test_set(data_set: List, how_many: int) -> List:
 
 
 def euklides(array_1: List, array_2: List) -> float:
-    dimension: int = len(array_1) - 1  # remove one dimension (price)
-    return math.sqrt(sum((array_1[i] - array_2[i]) ** 2 for i in range(dimension)))
+    dimension: int = len(array_1)
+    return math.sqrt(sum((array_1[i] - array_2[i]) ** 2 for i in range(1, dimension))) 
+    # range(1, dimension) 1 not 0 because identifier is in the 0 place
 
 
 def manhattan(array_1: List, array_2: List) -> float:
-    dimension: int = len(array_1) - 1
-    return sum(abs(array_1[i] - array_2[i]) for i in range(dimension))
+    dimension: int = len(array_1)
+    return sum(abs(array_1[i] - array_2[i]) for i in range(1, dimension))
 
 
 def cosine_similarity(array_1: List, array_2: List) -> float:
-    dimension: int = len(array_1) - 1
+    dimension: int = len(array_1)
 
-    dot_product: float = sum(array_1[i] * array_2[i] for i in range(dimension))
-    magnitude_1: float = math.sqrt(sum(array_1[i] ** 2 for i in range(dimension)))
-    magnitude_2: float = math.sqrt(sum(array_2[i] ** 2 for i in range(dimension)))
+    dot_product: float = sum(array_1[i] * array_2[i] for i in range(1, dimension))
+    magnitude_1: float = math.sqrt(sum(array_1[i] ** 2 for i in range(1, dimension)))
+    magnitude_2: float = math.sqrt(sum(array_2[i] ** 2 for i in range(1, dimension)))
 
     similarity: float = dot_product / (magnitude_1 * magnitude_2)
 
@@ -88,8 +89,16 @@ def predicted_price(neighbors: List, k: int):
     return sum(neighbor[-1] for neighbor in neighbors) / k
 
 
+def calculate_percentage_coverage(array: List, test_sample: List, predicted_price: float):
+    for item in array:
+        if item[:4] == test_sample:
+            dimension: int = len(item) - 1
+            return round((predicted_price / item[dimension]) * 100)
+
+
 if __name__ == "__main__":
     array: List = read_data("data.csv")
+    tmp_array = array.copy()
 
     train_count: int = prepare_set(len(array), 0.7)
     test_count: int = prepare_set(len(array), 0.3)
@@ -118,6 +127,8 @@ if __name__ == "__main__":
         print(f"Najbliżsi sąsiedzi:")
         for neigbor in neighbors:
             print(neigbor)
-        print("Przewidywana cena (tys PLN): ", predicted_price(neighbors, k))
+        pred_price = predicted_price(neighbors, k)
+        print("Przewidywana cena (tys PLN): ", pred_price)
+        print("Pokrycie: {}%".format(calculate_percentage_coverage(tmp_array, test_sample, pred_price)))
         for i in range(len(neighbors) * 15):
             print("-", end="")
