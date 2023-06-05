@@ -13,7 +13,7 @@ def read_data(path: TextIO) -> List:
         next(reader)  # skip the first line (data header)
 
         for row in reader:
-            values: List = [int(value) for value in row]
+            values: List = [int(value) if value.isdigit() else value for value in row]
             array.append(values)
 
     return array
@@ -86,7 +86,15 @@ def k_nearest_neighbors(train_set: List, test_sample: List, k: int, metric: int)
 
 
 def predicted_price(neighbors: List, k: int):
-    return sum(neighbor[-1] for neighbor in neighbors) / k
+    expensive: int = 0
+    cheap: int = 0
+    for neighbor in neighbors:
+        if neighbor[-1] == "tani":
+            cheap += 1
+        if neighbor[-1] == "drogi":
+            expensive += 1
+    
+    return "drogi" if expensive > cheap else "tani"
 
 
 def calculate_percentage_coverage(array: List, test_sample: List, predicted_price: float):
@@ -128,7 +136,7 @@ if __name__ == "__main__":
         for neigbor in neighbors:
             print(neigbor)
         pred_price = predicted_price(neighbors, k)
-        print("Przewidywana cena (tys PLN): ", pred_price)
-        print("Pokrycie: {}%".format(calculate_percentage_coverage(tmp_array, test_sample, pred_price)))
+        print("Ocena ceny: ", pred_price)
+        # print("Pokrycie: {}%".format(calculate_percentage_coverage(tmp_array, test_sample, pred_price)))
         for i in range(len(neighbors) * 15):
             print("-", end="")
