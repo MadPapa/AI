@@ -45,7 +45,7 @@ def add_data_to_the_test_set(data_set: List, how_many: int) -> List:
 
 def euklides(array_1: List, array_2: List) -> float:
     dimension: int = len(array_1)
-    return math.sqrt(sum((array_1[i] - array_2[i]) ** 2 for i in range(1, dimension))) 
+    return math.sqrt(sum((array_1[i] - array_2[i]) ** 2 for i in range(1, dimension)))
     # range(1, dimension) 1 not 0 because identifier is in the 0 place
 
 
@@ -66,7 +66,8 @@ def cosine_similarity(array_1: List, array_2: List) -> float:
     return 1 - similarity
 
 
-def k_nearest_neighbors(train_set: List, test_sample: List, k: int, metric: int):
+def k_nearest_neighbors(
+    train_set: List, test_sample: List, k: int, metric: int) -> List:
     distances: List = []
 
     for train_sample in train_set:
@@ -85,7 +86,7 @@ def k_nearest_neighbors(train_set: List, test_sample: List, k: int, metric: int)
     return neighbours
 
 
-def predicted_price(neighbors: List, k: int):
+def predicted_price(neighbors: List, k: int) -> str:
     expensive: int = 0
     cheap: int = 0
     for neighbor in neighbors:
@@ -93,15 +94,8 @@ def predicted_price(neighbors: List, k: int):
             cheap += 1
         if neighbor[-1] == "drogi":
             expensive += 1
-    
+
     return "drogi" if expensive > cheap else "tani"
-
-
-def calculate_percentage_coverage(array: List, test_sample: List, predicted_price: float):
-    for item in array:
-        if item[:4] == test_sample:
-            dimension: int = len(item) - 1
-            return round((predicted_price / item[dimension]) * 100)
 
 
 if __name__ == "__main__":
@@ -137,6 +131,5 @@ if __name__ == "__main__":
             print(neigbor)
         pred_price = predicted_price(neighbors, k)
         print("Ocena ceny: ", pred_price)
-        # print("Pokrycie: {}%".format(calculate_percentage_coverage(tmp_array, test_sample, pred_price)))
         for i in range(len(neighbors) * 15):
             print("-", end="")
